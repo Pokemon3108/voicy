@@ -10,15 +10,25 @@ if sys.platform == 'win32':
 else:
     import sounddevice as sd
 
+# Peak volume as a fraction of full scale (1.0 was a sharp, loud beep).
+_AMPLITUDE = 0.16
+
 
 def _generate_tone(frequency: float, duration: float, sample_rate: int = 44100) -> np.ndarray:
-    t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
+    n = int(sample_rate * duration)
+    t = np.linspace(0, duration, n, endpoint=False)
     tone = np.sin(2 * np.pi * frequency * t)
-    # Fade in/out to avoid clicks
-    fade_samples = min(int(sample_rate * 0.01), len(tone) // 4)
-    fade = np.linspace(0, 1, fade_samples)
-    tone[:fade_samples] *= fade
-    tone[-fade_samples:] *= fade[::-1]
+
+    fade_in = min(int(sample_rate * 0.03), n // 3)
+    fade_out = min(int(sample_rate * 0.08), n // 2)
+    envelope = np.ones(n)
+    envelope[:fade_in] = np.linspace(0, 1, fade_in)
+    envelope[-fade_out:] = np.linspace(1, 0, fade_out)
+    # Decay so the tone eases off instead of sitting at full volume.
+    envelope *= np.exp(-3.5 * t / duration)
+
+    peak = float(np.max(np.abs(tone * envelope))) or 1.0
+    tone = tone * envelope / peak * _AMPLITUDE
     return (tone * 32767).astype(np.int16)
 
 
@@ -44,17 +54,17 @@ def _play_async(frequency: float, duration: float) -> None:
 
 
 def play_start():
-    threading.Thread(target=_play_async, args=(880.0, 0.15), daemon=True).start()
+    threading.Thread(target=_play_async, args=(660.0, 0.12), daemon=True).start()
 
 
 def play_stop():
-    threading.Thread(target=_play_async, args=(440.0, 0.15), daemon=True).start()
+    threading.Thread(target=_play_async, args=(392.0, 0.14), daemon=True).start()
 
 
 def play_error():
     # Two low beeps — distinct from start/stop
     def _error():
-        _play_async(220.0, 0.12)
-        import time; time.sleep(0.05)
-        _play_async(220.0, 0.12)
+        _play_async(196.0, 0.14)
+        import time; time.sleep(0.08)
+        _play_async(196.0, 0.14)
     threading.Thread(target=_error, daemon=True).start()

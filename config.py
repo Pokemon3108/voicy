@@ -1,5 +1,5 @@
 HOTKEY = '<alt>+v'
-MODEL_SIZE = 'tiny'
+MODEL_SIZE = 'small'
 SAMPLE_RATE = 16000
 CHANNELS = 1
 LANGUAGE = None          # None = auto-detect
