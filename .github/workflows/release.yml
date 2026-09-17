@@ -1,0 +1,103 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - release
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Windows → Voicy.exe ──────────────────────────────────────────────────────
+  build-windows:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build
+        run: pyinstaller build.spec
+
+      - name: Upload Windows release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ needs.release-please.outputs.tag_name }}" dist/Voicy.exe --clobber
+
+  # ── macOS → Voicy.dmg ────────────────────────────────────────────────────────
+  build-macos:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install system deps
+        run: brew install portaudio create-dmg
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build
+        run: pyinstaller build.spec
+
+      - name: Create DMG
+        run: |
+          create-dmg \
+            --volname "Voicy" \
+            --volicon "dist/Voicy.app/Contents/Resources/icon.icns" \
+            --window-pos 200 120 \
+            --window-size 500 300 \
+            --icon-size 100 \
+            --icon "Voicy.app" 125 120 \
+            --hide-extension "Voicy.app" \
+            --app-drop-link 375 120 \
+            "Voicy.dmg" \
+            "dist/Voicy.app" \
+          || create-dmg \
+            --volname "Voicy" \
+            --window-size 500 300 \
+            --icon-size 100 \
+            --icon "Voicy.app" 125 120 \
+            --app-drop-link 375 120 \
+            "Voicy.dmg" \
+            "dist/Voicy.app"
+
+      - name: Upload macOS release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ needs.release-please.outputs.tag_name }}" Voicy.dmg --clobber
