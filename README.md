@@ -90,7 +90,10 @@ SAMPLE_RATE = 16000       # Hz — keep at 16000 for Whisper
 CHANNELS    = 1           # Mono
 LANGUAGE    = None        # None = auto-detect; or e.g. 'ru', 'en'
 COMPUTE_TYPE = 'int8'     # Quantisation: 'int8' (fast) or 'float16' (accurate)
+DEVICE      = 'cpu'       # Where Whisper runs: 'cpu', 'cuda', or 'auto'
 ```
+
+`DEVICE` is the Whisper inference device, not the microphone. Use `'cpu'` unless you have an NVIDIA GPU with CUDA set up for CTranslate2; `'cuda'` runs the model on that GPU; `'auto'` picks CUDA when available, otherwise CPU. On CPU keep `COMPUTE_TYPE = 'int8'`.
 
 ### Model Size vs. Accuracy
 
