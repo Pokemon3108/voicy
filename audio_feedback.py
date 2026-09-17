@@ -1,11 +1,14 @@
+import io
+import sys
 import threading
+import wave
+
 import numpy as np
 
-try:
-    import simpleaudio as sa
-    _SA_AVAILABLE = True
-except Exception:
-    _SA_AVAILABLE = False
+if sys.platform == 'win32':
+    import winsound
+else:
+    import sounddevice as sd
 
 
 def _generate_tone(frequency: float, duration: float, sample_rate: int = 44100) -> np.ndarray:
@@ -19,13 +22,23 @@ def _generate_tone(frequency: float, duration: float, sample_rate: int = 44100) 
     return (tone * 32767).astype(np.int16)
 
 
-def _play_async(frequency: float, duration: float) -> None:
-    if not _SA_AVAILABLE:
+def _play_tone(tone: np.ndarray, sample_rate: int = 44100) -> None:
+    if sys.platform == 'win32':
+        buf = io.BytesIO()
+        with wave.open(buf, 'wb') as wf:
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(sample_rate)
+            wf.writeframes(tone.tobytes())
+        winsound.PlaySound(buf.getvalue(), winsound.SND_MEMORY)
         return
+
+    sd.play(tone.astype(np.float32) / 32768.0, samplerate=sample_rate, blocking=True)
+
+
+def _play_async(frequency: float, duration: float) -> None:
     try:
-        tone = _generate_tone(frequency, duration)
-        play_obj = sa.play_buffer(tone, 1, 2, 44100)
-        play_obj.wait_done()
+        _play_tone(_generate_tone(frequency, duration))
     except Exception:
         pass
 

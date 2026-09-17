@@ -138,7 +138,7 @@ voicy/
 ├── transcriber.py                  faster-whisper model loader + transcribe()
 ├── text_injector.py                Clipboard save → paste → restore
 ├── hotkey_listener.py              pynput GlobalHotKeys in daemon thread
-├── audio_feedback.py               Sine-wave beeps (numpy + simpleaudio)
+├── audio_feedback.py               Sine-wave beeps (winsound on Windows, sounddevice elsewhere)
 ├── tray_icon.py                    pystray icon with 3 states + quit menu
 ├── build.spec                      PyInstaller build spec (Win + macOS)
 ├── runtime_hooks/
@@ -155,7 +155,6 @@ voicy/
 
 ### Windows
 - Run as **Administrator** if the hotkey doesn't fire in elevated windows (Task Manager, UAC dialogs).
-- `simpleaudio` requires Visual C++ Redistributable — usually already installed.
 
 ### macOS
 - Grant **Accessibility** permission (System Settings → Privacy → Accessibility) for `pynput` to register global hotkeys.
@@ -182,6 +181,3 @@ voicy/
 
 **Text pasted in wrong place**  
 → Click the target field, then press Alt+V. The injector pastes into whatever window had focus when the hotkey was released the second time.
-
-**`simpleaudio` install fails on Windows**  
-→ Run `pip install pipwin` then `pipwin install simpleaudio`, or install from a pre-built wheel.
