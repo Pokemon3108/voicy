@@ -87,7 +87,7 @@ if sys.platform == 'win32':
         strip=False,
         upx=False,
         console=False,
-        icon=None,
+        icon='icons/microphone.ico',
     )
 
 # ── macOS → Voicy.app bundle ──────────────────────────────────────────────────
@@ -102,6 +102,7 @@ else:
         strip=False,
         upx=False,
         console=False,
+        icon='icons/microphone.icns',
     )
     coll = COLLECT(
         exe,
@@ -114,6 +115,7 @@ else:
     app = BUNDLE(
         coll,
         name='Voicy.app',
+        icon='icons/microphone.icns',
         bundle_identifier='com.voicy.app',
         info_plist={
             'NSMicrophoneUsageDescription': 'Voicy needs microphone access to record speech.',
