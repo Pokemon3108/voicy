@@ -128,6 +128,7 @@ jobs:
       - name: Upload release assets
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           gh release upload "${{ needs.release-please.outputs.tag_name }}" \
             artifacts/windows-exe/Voicy.exe \
