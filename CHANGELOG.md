@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/Pokemon3108/voicy/compare/v1.1.2...v1.1.3) (2026-09-19)
+
+
+### Bug Fixes
+
+* clean up readme.md ([a997979](https://github.com/Pokemon3108/voicy/commit/a997979a390ed46384d8226583337fb89fd9bd83))
+
 ## [1.1.2](https://github.com/Pokemon3108/voicy/compare/v1.1.1...v1.1.2) (2026-09-19)
 
 
