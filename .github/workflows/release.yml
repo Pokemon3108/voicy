@@ -125,12 +125,17 @@ jobs:
         with:
           path: artifacts
 
-      - name: Upload release assets
+      - name: Upload assets and publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release upload "${{ needs.release-please.outputs.tag_name }}" \
-            artifacts/windows-exe/Voicy.exe \
-            artifacts/macos-dmg/Voicy.dmg \
-            --clobber
+          TAG="${{ needs.release-please.outputs.tag_name }}"
+          VERSION="${TAG#v}"
+          EXE="voicy-${VERSION}.exe"
+          DMG="voicy-${VERSION}.dmg"
+          mv artifacts/windows-exe/Voicy.exe "$EXE"
+          mv artifacts/macos-dmg/Voicy.dmg "$DMG"
+          # Draft stays mutable; publish only after versioned assets are attached.
+          gh release upload "$TAG" "$EXE" "$DMG"
+          gh release edit "$TAG" --draft=false

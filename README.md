@@ -102,9 +102,9 @@ Merge changes to `master`. Release Please opens or updates a release PR.
 After merging that PR, CI creates the version tag, builds both platforms, and publishes
 a GitHub Release automatically.
 
-GitHub Actions builds `Voicy.exe` (Windows) and `Voicy.dmg` (macOS) in parallel, then
-attaches both to the new Release. Users download from the **Releases** page — no
-Python required.
+GitHub Actions builds Windows and macOS binaries in parallel, then attaches
+`voicy-<version>.exe` and `voicy-<version>.dmg` to that GitHub Release. Users
+download from the **Releases** page — no Python required.
 
 ### Building locally
 
