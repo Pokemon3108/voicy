@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.4](https://github.com/Pokemon3108/voicy/compare/v1.1.3...v1.1.4) (2026-09-19)
+
+
+### Bug Fixes
+
+* add icon to .exe and .dmg files ([0fe3f70](https://github.com/Pokemon3108/voicy/commit/0fe3f70a862571bfda174d8e874913f456cccc14))
+* fix icon in control panel during app run ([ad4f6eb](https://github.com/Pokemon3108/voicy/commit/ad4f6eb8eae4618b953f9d347bf6770e41a191cb))
+
 ## [1.1.3](https://github.com/Pokemon3108/voicy/compare/v1.1.2...v1.1.3) (2026-09-19)
 
 
