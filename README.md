@@ -67,16 +67,6 @@ A tray notification confirms the app is ready.
 | Transcription succeeds | Text pasted at cursor; tray returns to gray |
 | Nothing was said | Double error beep, nothing pasted |
 
-### Tray Icon States
-
-| Color | Meaning |
-|-------|---------|
-| Gray | Idle — waiting for hotkey |
-| Red | Recording — mic is live |
-| Yellow | Processing — Whisper is working |
-
-Right-click the tray icon → **Quit** to exit cleanly.
-
 ---
 
 ## Configuration
@@ -85,7 +75,7 @@ Edit `config.py` to change defaults:
 
 ```python
 HOTKEY      = '<alt>+v'   # Global hotkey combination
-MODEL_SIZE  = 'tiny'      # Whisper model size (see table below)
+MODEL_SIZE  = 'small'      # Whisper model size (see table below)
 SAMPLE_RATE = 16000       # Hz — keep at 16000 for Whisper
 CHANNELS    = 1           # Mono
 LANGUAGE    = None        # None = auto-detect; or e.g. 'ru', 'en'
