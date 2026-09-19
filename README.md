@@ -98,13 +98,9 @@ DEVICE      = 'cpu'       # Where Whisper runs: 'cpu', 'cuda', or 'auto'
 
 ## Releasing a New Version
 
-Push changes to the `release` branch. Release Please opens or updates a release PR.
+Merge changes to `master`. Release Please opens or updates a release PR.
 After merging that PR, CI creates the version tag, builds both platforms, and publishes
-a GitHub Release automatically:
-
-```bash
-git push origin release
-```
+a GitHub Release automatically.
 
 GitHub Actions builds `Voicy.exe` (Windows) and `Voicy.dmg` (macOS) in parallel, then
 attaches both to the new Release. Users download from the **Releases** page — no

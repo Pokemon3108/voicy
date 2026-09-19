@@ -3,17 +3,15 @@ name: Release Please
 on:
   push:
     branches:
-      - release
+      - master
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
@@ -22,14 +20,13 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target-branch: release
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
   # ── Windows → Voicy.exe ──────────────────────────────────────────────────────
   build-windows:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: windows-latest
     permissions:
       contents: read
@@ -62,7 +59,7 @@ jobs:
   # ── macOS → Voicy.dmg ────────────────────────────────────────────────────────
   build-macos:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: macos-latest
     permissions:
       contents: read
@@ -118,7 +115,7 @@ jobs:
 
   publish:
     needs: [release-please, build-windows, build-macos]
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
