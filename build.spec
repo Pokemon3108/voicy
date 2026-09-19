@@ -2,7 +2,7 @@ import sys
 from PyInstaller.utils.hooks import collect_data_files, collect_dynamic_libs
 
 # ── Data & binaries ───────────────────────────────────────────────────────────
-datas = []
+datas = [('icons/microphone.ico', 'icons')]
 datas += collect_data_files('faster_whisper')
 datas += collect_data_files('ctranslate2')
 datas += collect_data_files('sounddevice')
