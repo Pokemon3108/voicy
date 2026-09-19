@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/Pokemon3108/voicy/compare/v1.1.1...v1.1.2) (2026-09-19)
+
+
+### Bug Fixes
+
+* update artifact name in ci ([2b2c17f](https://github.com/Pokemon3108/voicy/commit/2b2c17f46c5f37f74b66229a3b8e6c02eb478ae5))
+
 ## [1.1.1](https://github.com/Pokemon3108/voicy/compare/v1.1.0...v1.1.1) (2026-09-19)
 
 
