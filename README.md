@@ -106,15 +106,6 @@ GitHub Actions builds Windows and macOS binaries in parallel, then attaches
 `voicy-<version>.exe` and `voicy-<version>.dmg` to that GitHub Release. Users
 download from the **Releases** page — no Python required.
 
-### Building locally
-
-```bash
-pip install pyinstaller
-pyinstaller build.spec
-# Windows → dist/Voicy.exe
-# macOS   → dist/Voicy.app  (then wrap with create-dmg)
-```
-
 ---
 
 ## Project Structure
