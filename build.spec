@@ -22,6 +22,7 @@ if sys.platform == 'win32':
         'pynput._util.win32_vk',
         'pystray._win32',
         'pyperclip.backends.windows',
+        'winsound',
     ]
 elif sys.platform == 'darwin':
     _platform_imports = [

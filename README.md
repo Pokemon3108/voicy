@@ -67,16 +67,6 @@ A tray notification confirms the app is ready.
 | Transcription succeeds | Text pasted at cursor; tray returns to gray |
 | Nothing was said | Double error beep, nothing pasted |
 
-### Tray Icon States
-
-| Color | Meaning |
-|-------|---------|
-| Gray | Idle — waiting for hotkey |
-| Red | Recording — mic is live |
-| Yellow | Processing — Whisper is working |
-
-Right-click the tray icon → **Quit** to exit cleanly.
-
 ---
 
 ## Configuration
@@ -85,12 +75,15 @@ Edit `config.py` to change defaults:
 
 ```python
 HOTKEY      = '<alt>+v'   # Global hotkey combination
-MODEL_SIZE  = 'tiny'      # Whisper model size (see table below)
+MODEL_SIZE  = 'small'      # Whisper model size (see table below)
 SAMPLE_RATE = 16000       # Hz — keep at 16000 for Whisper
 CHANNELS    = 1           # Mono
 LANGUAGE    = None        # None = auto-detect; or e.g. 'ru', 'en'
 COMPUTE_TYPE = 'int8'     # Quantisation: 'int8' (fast) or 'float16' (accurate)
+DEVICE      = 'cpu'       # Where Whisper runs: 'cpu', 'cuda', or 'auto'
 ```
+
+`DEVICE` is the Whisper inference device, not the microphone. Use `'cpu'` unless you have an NVIDIA GPU with CUDA set up for CTranslate2; `'cuda'` runs the model on that GPU; `'auto'` picks CUDA when available, otherwise CPU. On CPU keep `COMPUTE_TYPE = 'int8'`.
 
 ### Model Size vs. Accuracy
 
@@ -138,7 +131,7 @@ voicy/
 ├── transcriber.py                  faster-whisper model loader + transcribe()
 ├── text_injector.py                Clipboard save → paste → restore
 ├── hotkey_listener.py              pynput GlobalHotKeys in daemon thread
-├── audio_feedback.py               Sine-wave beeps (numpy + simpleaudio)
+├── audio_feedback.py               Sine-wave beeps (winsound on Windows, sounddevice elsewhere)
 ├── tray_icon.py                    pystray icon with 3 states + quit menu
 ├── build.spec                      PyInstaller build spec (Win + macOS)
 ├── runtime_hooks/
@@ -155,7 +148,6 @@ voicy/
 
 ### Windows
 - Run as **Administrator** if the hotkey doesn't fire in elevated windows (Task Manager, UAC dialogs).
-- `simpleaudio` requires Visual C++ Redistributable — usually already installed.
 
 ### macOS
 - Grant **Accessibility** permission (System Settings → Privacy → Accessibility) for `pynput` to register global hotkeys.
@@ -182,6 +174,3 @@ voicy/
 
 **Text pasted in wrong place**  
 → Click the target field, then press Alt+V. The injector pastes into whatever window had focus when the hotkey was released the second time.
-
-**`simpleaudio` install fails on Windows**  
-→ Run `pip install pipwin` then `pipwin install simpleaudio`, or install from a pre-built wheel.
